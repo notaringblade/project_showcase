@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:project_showcase/page/discover_page.dart';
-import 'package:project_showcase/page/home_page.dart';
-import 'package:project_showcase/page/portfolios_page.dart';
-import 'package:project_showcase/page/user_profile_page.dart';
+import 'package:project_showcase/main_pages/discover_page.dart';
+import 'package:project_showcase/main_pages/home_page.dart';
+import 'package:project_showcase/main_pages/portfolios_page.dart';
+import 'package:project_showcase/main_pages/user_profile_page.dart';
+import 'package:project_showcase/services/auth_service.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -22,6 +23,8 @@ class MainPageState extends State<MainPage> {
     UserProfilePage()
   ];
 
+  Auth auth = Auth();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +32,14 @@ class MainPageState extends State<MainPage> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.logout_outlined,
-                color: Theme.of(context).iconTheme.color,
+              child: GestureDetector(
+                onTap: () {
+                  auth.signOut();
+                },
+                child: Icon(
+                  Icons.logout_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
             )
           ],

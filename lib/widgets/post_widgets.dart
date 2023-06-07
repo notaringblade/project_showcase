@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:project_showcase/models/post_model.dart';
 import 'package:project_showcase/widgets/pill_widget.dart';
 
@@ -12,12 +13,14 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime time = post.createdAt.toDate();
+    String formattedDate = DateFormat("yyyy-MM-dd, kk:mm").format(time);
+
     return Padding(
       padding: const EdgeInsets.all(14.0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Theme.of(context).colorScheme.primary)),
+      child: Material(
+        borderRadius: BorderRadius.circular(20),
+        elevation: 4,
         child: Column(
           children: [
             Container(
@@ -36,14 +39,17 @@ class PostWidget extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.person_outline),
-                            Text(post.username),
-                          ],
+                        SizedBox(
+                          width: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.person_outline),
+                              Text('@${post.username}', style: Theme.of(context).textTheme.bodyLarge,),
+                            ],
+                          ),
                         ),
-                        Text(post.createdAt.toString())
+                        Text(formattedDate)
                       ],
                     ),
                   ),
@@ -60,17 +66,34 @@ class PostWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        post.thumbnailImageRef,
-                        // width: double.infinity,
-                        // height: double.maxFinite,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  Image.network(
+                    post.thumbnailImageRef,
+      
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes !=
+                                    null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return (const Center(
+                        child: Text(
+                            'Error Loading Image. Please Check Your Internet Connection...'),
+                      ));
+                    },
+                    // width: double.infinity,
+                    // height: double.maxFinite,
+                    fit: BoxFit.cover,
                   )
                 ],
               ),
@@ -97,13 +120,28 @@ class PostWidget extends StatelessWidget {
                       post.postDescription,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const Padding(
+                     Padding(
                       padding: EdgeInsets.only(top: 12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Icon(Icons.favorite_border_outlined),
-                          Icon(Icons.comment),
+                          SizedBox(
+                            width: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Icon(Icons.favorite_border_outlined),
+                                Text(post.likes.length.toString())
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [Icon(Icons.comment), Text('0')],
+                            ),
+                          ),
                           Icon(Icons.share_outlined),
                         ],
                       ),

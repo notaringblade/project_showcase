@@ -7,17 +7,25 @@ class PillWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.primary),
-          borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.secondary),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Text(
-            name,
-            textAlign: TextAlign.center,
+    return Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.secondary),
+            borderRadius: BorderRadius.circular(10),
+            color: Theme.of(context).colorScheme.secondary),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Text(
+              name,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),
