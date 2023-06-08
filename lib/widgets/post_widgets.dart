@@ -1,157 +1,228 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:project_showcase/models/post_model.dart';
+import 'package:project_showcase/screens/post_screen.dart';
+import 'package:project_showcase/services/post_services.dart';
 import 'package:project_showcase/widgets/pill_widget.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
     required this.post,
+    required this.userid,
+    required this.postId,
   });
 
   final PostModel post;
+  final String userid;
+  final String postId;
+
+  @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.post.likes.contains(widget.userid);
+  }
 
   @override
   Widget build(BuildContext context) {
-    DateTime time = post.createdAt.toDate();
-    String formattedDate = DateFormat("yyyy-MM-dd, kk:mm").format(time);
+    DateTime time = widget.post.createdAt.toDate();
+    String formattedDate = DateFormat("dd-MM-y,  kk:mm").format(time);
 
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(20),
-        elevation: 4,
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              // width: 400,
-              // height: 220,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.person_outline),
-                              Text('@${post.username}', style: Theme.of(context).textTheme.bodyLarge,),
-                            ],
-                          ),
-                        ),
-                        Text(formattedDate)
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: post.categories.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: PillWidget(name: post.categories[index]),
-                        );
-                      },
-                    ),
-                  ),
-                  Image.network(
-                    post.thumbnailImageRef,
-      
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return SizedBox(
-                        height: 50,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes !=
-                                    null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return (const Center(
-                        child: Text(
-                            'Error Loading Image. Please Check Your Internet Connection...'),
-                      ));
-                    },
-                    // width: double.infinity,
-                    // height: double.maxFinite,
-                    fit: BoxFit.cover,
-                  )
-                ],
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
+    PostServices postServices = PostServices();
+
+    void like() {
+      setState(() {
+        postServices.likePost(widget.postId, widget.userid, isLiked);
+        isLiked = !isLiked;
+      });
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, CupertinoPageRoute(
+          builder: (context) {
+            return PostScreen(post: widget.post);
+          },
+        ));
+      },
+      // onDoubleTapDown: (details) {
+      //   like();
+      // },
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Material(
+          borderRadius: BorderRadius.circular(20),
+          elevation: 4,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20),
-                  )),
-              width: double.infinity,
-              // height: 100,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                // width: 400,
+                // height: 220,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      post.postTitle,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      post.postDescription,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                     Padding(
-                      padding: EdgeInsets.only(top: 12.0),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: double.infinity,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 50,
-                            child: Row(
+                            height: 60,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.favorite_border_outlined),
-                                Text(post.likes.length.toString())
+                                Icon(
+                                  Icons.circle_outlined,
+                                  size: 42,
+                                ),
+                                Text(
+                                  '@${widget.post.username}',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            width: 50,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Icon(Icons.comment), Text('0')],
-                            ),
-                          ),
-                          Icon(Icons.share_outlined),
+                          Text(formattedDate)
                         ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.post.categories.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                PillWidget(name: widget.post.categories[index]),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            widget.post.thumbnailImageRef,
+
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                height: 50,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              print(error);
+                              return (const Center(
+                                child: Text('This Image is Invalid'),
+                              ));
+                            },
+                            // width: double.infinity,
+                            // height: double.maxFinite,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     )
                   ],
                 ),
               ),
-              // color: Theme.of(context).colorScheme.secondary,
-            )
-          ],
+              Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(20),
+                    )),
+                width: double.infinity,
+                // height: 100,
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.post.postTitle,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(onTap: () {
+                                    like();
+                                  }, child: Builder(builder: (context) {
+                                    if (isLiked) {
+                                      return const Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      );
+                                    } else {
+                                      return const Icon(
+                                          Icons.favorite_border_outlined);
+                                    }
+                                  })),
+                                  Text(widget.post.likes.length.toString())
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [Icon(Icons.comment), Text('0')],
+                              ),
+                            ),
+                            Icon(Icons.share_outlined),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                // color: Theme.of(context).colorScheme.secondary,
+              )
+            ],
+          ),
         ),
       ),
     );

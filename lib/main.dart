@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.dark,
       //
       home: const AuthState(),
     );

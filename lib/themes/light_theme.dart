@@ -7,7 +7,7 @@ ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: Color(0xfff0f0f0),
     iconTheme: IconThemeData(color: Colors.black),
-    // appBarTheme: const AppBarTheme(color: Colors.black),
+    appBarTheme: const AppBarTheme(color: Colors.black,iconTheme: IconThemeData(color: Colors.black)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color(0xfff0f0f0),
       selectedItemColor: Color(0xff0a0200),

@@ -28,42 +28,16 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  auth.signOut();
-                },
-                child: Icon(
-                  Icons.logout_outlined,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-              ),
-            )
-          ],
-          title: Text("PROJECT", style: Theme.of(context).textTheme.titleLarge),
-          backgroundColor: Colors.transparent,
-          // centerTitle: true,
-          elevation: 0,
-        ),
         backgroundColor: Theme.of(context).colorScheme.background,
         body: pages[_selectedIndex],
         bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 20,
-                  color: Colors.black.withOpacity(.1),
-                )
-              ],
             ),
             child: SafeArea(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4),
                 child: GNav(
                   rippleColor: Theme.of(context).colorScheme.primary,
                   hoverColor: Theme.of(context).colorScheme.secondary,
