@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:project_showcase/auth/auth_state.dart';
+// import 'package:project_showcase/auth/auth_state.dart';
 import 'package:project_showcase/firebase_options.dart';
+import 'package:project_showcase/routing/page_router.dart';
 import 'package:project_showcase/themes/dark_theme.dart';
 import 'package:project_showcase/themes/light_theme.dart';
 
@@ -20,14 +21,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.dark,
       //
-      home: const AuthState(),
+      routerDelegate: appRouter.routerDelegate,
+      routeInformationParser: appRouter.routeInformationParser,
+      routeInformationProvider: appRouter.routeInformationProvider,
     );
   }
 }

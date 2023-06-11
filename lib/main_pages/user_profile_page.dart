@@ -2,12 +2,12 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_showcase/models/post_model.dart';
 import 'package:project_showcase/models/user_model.dart';
-import 'package:project_showcase/screens/create_post.dart';
+import 'package:project_showcase/routing/route_constants.dart';
 import 'package:project_showcase/services/post_services.dart';
 import 'package:project_showcase/services/storage_services.dart';
 import 'package:project_showcase/utils/utils.dart';
@@ -113,14 +113,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          setState(() {});
-                          Navigator.push(context, CupertinoPageRoute(
-                            builder: (context) {
-                              return CreatePost(
-                                user: thisUser,
-                              );
-                            },
-                          ));
+                          context.pushNamed(RouteConstants.createPost,
+                              extra: thisUser);
                         },
                         child: Icon(
                           Icons.add,

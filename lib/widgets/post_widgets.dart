@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:project_showcase/models/post_model.dart';
-import 'package:project_showcase/screens/post_screen.dart';
+import 'package:project_showcase/routing/route_constants.dart';
 import 'package:project_showcase/services/post_services.dart';
 import 'package:project_showcase/widgets/pill_widget.dart';
 
@@ -63,11 +63,7 @@ class _PostWidgetState extends State<PostWidget> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, CupertinoPageRoute(
-          builder: (context) {
-            return PostScreen(post: widget.post);
-          },
-        ));
+        context.pushNamed(RouteConstants.postScreen, extra: widget.post);
       },
       onDoubleTapDown: (details) {
         like();
@@ -132,7 +128,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                     ),
                     SizedBox(
-                      height: 200,
+                      // height: 200,
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -140,7 +136,7 @@ class _PostWidgetState extends State<PostWidget> {
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             widget.post.thumbnailImageRef,
-                    
+
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) return child;
