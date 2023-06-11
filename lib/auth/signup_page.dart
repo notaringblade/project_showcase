@@ -16,6 +16,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordContoller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,21 +26,24 @@ class _SignupPageState extends State<SignupPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.file_copy_outlined,
                   size: 128,
                 ),
-                SizedBox(
-                  height: 70,
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 CustomTextField(
                     textController: usernameController, hintText: 'username'),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 CustomTextField(
                     textController: emailController, hintText: 'email'),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 CustomTextField(
@@ -47,16 +51,20 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'password',
                   obscure: true,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 GestureDetector(
                     onTap: () {
-                      auth.signUp(context, emailController.text,
-                          usernameController.text, passwordContoller.text);
+                      auth.signUp(
+                        context,
+                        emailController.text,
+                        usernameController.text,
+                        passwordContoller.text,
+                      );
                     },
-                    child: CustomButton(buttonText: 'Sign up')),
-                SizedBox(
+                    child: const CustomButton(buttonText: 'Sign up')),
+                const SizedBox(
                   height: 20,
                 ),
                 Row(

@@ -4,21 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:project_showcase/models/user_model.dart';
 
 class Auth {
+  bool created = false;
+
   Future signUp(BuildContext context, String email, String username,
       String password) async {
-    showLoading(context);
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
     if (email.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
       try {
-        Navigator.pop(context);
-
         UserCredential user = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
+
+        // String profileUrl =
+        //     await storageServices.storeImage('profileImage', file);
 
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.user!.uid)
-            .set(UserModel(username: username, uid: user.user!.uid, posts: [])
-                .toMap());
+            .set(UserModel(
+              username: username,
+              profileUrl:
+                  'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+              uid: user.user!.uid,
+              posts: [],
+            ).toMap());
+
+        created = true;
       } catch (e) {
         if (context.mounted) {
           showDialog(

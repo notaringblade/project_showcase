@@ -16,7 +16,7 @@ class ViewPictureScreen extends StatelessWidget {
         child: Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.network(imageRef),
+            child: Image.network(imageRef, filterQuality: FilterQuality.high),
           ),
         ),
       ),

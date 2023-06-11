@@ -1,33 +1,55 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project_showcase/models/post_model.dart';
+import 'package:project_showcase/services/storage_services.dart';
 
 class PostServices {
-  Future createPost(String postTitle, String postDecription, String username,
-      String uid, String imageLink, BuildContext context) async {
+  Future createPost(
+      String postTitle,
+      String postDecription,
+      String username,
+      String uid,
+      Uint8List image,
+      List<Uint8List> images,
+      BuildContext context) async {
     showDialog(
-      context: context,
-      builder: (context) {
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+        context: context,
+        builder: (context) {
+          return Center(child: CircularProgressIndicator());
+        },
+        barrierDismissible: false);
     await FirebaseFirestore.instance
         .collection('posts')
         .add(PostModel(
                 username: username,
+                uid: uid,
                 postType: 'Software',
                 postTitle: postTitle,
                 postDescription: postDecription,
-                thumbnailImageRef: imageLink,
+                thumbnailImageRef: '',
                 categories: ['UI'],
                 likes: [],
+                images: [],
                 createdAt: Timestamp.now())
             .toMap())
-        .then((value) =>
-            FirebaseFirestore.instance.collection('users').doc(uid).update({
-              'posts': FieldValue.arrayUnion([value.id])
-            }))
-        .catchError((err) => print(err));
+        .then((value) async {
+      FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'posts': FieldValue.arrayUnion([value.id]),
+      });
+
+      String thumbnail =
+          await StorageServices().postThumbnail('postImages', value.id, image);
+
+      List imageUrls =
+          await StorageServices().postImages("postImages", value.id, images);
+
+      FirebaseFirestore.instance.collection('posts').doc(value.id).update({
+        'thumbnailImageRef': thumbnail,
+        'images': FieldValue.arrayUnion(imageUrls)
+      });
+    }).catchError((err) => print(err));
 
     if (context.mounted) {
       Navigator.pop(context);
@@ -35,7 +57,7 @@ class PostServices {
   }
 
   Future deletePost(id, userId) async {
-
+    await StorageServices().deleteImages('postImages', id);
     await FirebaseFirestore.instance.collection('posts').doc(id).delete();
     await FirebaseFirestore.instance.collection('users').doc(userId).update({
       'posts': FieldValue.arrayRemove([id])
@@ -68,6 +90,4 @@ class PostServices {
       hasLiked = false;
     }
   }
-
-
 }

@@ -26,17 +26,27 @@ class PostScreen extends StatelessWidget {
                   // snap: true,
                   bottom: Tab(
                       height: 250,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          // height: 250,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                post.thumbnailImageRef,
-                                fit: BoxFit.cover,
-                              )),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, CupertinoPageRoute(
+                            builder: (context) {
+                              return ViewPictureScreen(
+                                  imageRef: post.thumbnailImageRef);
+                            },
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            // height: 250,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  post.thumbnailImageRef,
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
                         ),
                       )),
                 )
@@ -79,24 +89,57 @@ class PostScreen extends StatelessWidget {
                 ),
                 Expanded(
                     child: ListView.builder(
-                  itemCount: 10,
+                  shrinkWrap: true,
+                  itemCount: post.images.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(context, CupertinoPageRoute(
                           builder: (context) {
                             return ViewPictureScreen(
-                                imageRef: post.thumbnailImageRef);
+                                imageRef: post.images[index]);
                           },
                         ));
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            post.thumbnailImageRef,
-                            fit: BoxFit.cover,
+                      child: SizedBox(
+                        height: 300,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              post.images[index],
+
+                              loadingBuilder: (BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                print(error);
+                                return (const Center(
+                                  child: Text('This Image is Invalid'),
+                                ));
+                              },
+                              // width: double.infinity,
+                              // height: double.maxFinite,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

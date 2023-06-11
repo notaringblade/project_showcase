@@ -5,22 +5,26 @@ import 'package:flutter/foundation.dart';
 
 class UserModel {
   final String username;
+  final String profileUrl;
   final String uid;
   final List posts;
 
   UserModel({
     required this.username,
+    required this.profileUrl,
     required this.uid,
     required this.posts,
   });
 
   UserModel copyWith({
     String? username,
+    String? profileUrl,
     String? uid,
     List? posts,
   }) {
     return UserModel(
       username: username ?? this.username,
+      profileUrl: profileUrl ?? this.profileUrl,
       uid: uid ?? this.uid,
       posts: posts ?? this.posts,
     );
@@ -29,6 +33,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'username': username,
+      'profileUrl': profileUrl,
       'uid': uid,
       'posts': posts,
     };
@@ -40,7 +45,8 @@ class UserModel {
         uid: map['uid'] as String,
         posts: List.from(
           (map['posts'] as List),
-        ));
+        ),
+        profileUrl: '');
   }
 
   String toJson() => json.encode(toMap());

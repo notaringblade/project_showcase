@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,12 +11,10 @@ class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
     required this.post,
-    required this.userid,
     required this.postId,
   });
 
   final PostModel post;
-  final String userid;
   final String postId;
 
   @override
@@ -24,11 +23,28 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   bool isLiked = false;
+  String url = '';
 
   @override
   void initState() {
     super.initState();
-    isLiked = widget.post.likes.contains(widget.userid);
+    getPfp();
+    isLiked = widget.post.likes.contains(widget.post.uid);
+  }
+
+  Future getPfp() async {
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.post.uid)
+        .get();
+
+    try {
+      setState(() {
+        url = user['profileUrl'];
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -40,7 +56,7 @@ class _PostWidgetState extends State<PostWidget> {
 
     void like() {
       setState(() {
-        postServices.likePost(widget.postId, widget.userid, isLiked);
+        postServices.likePost(widget.postId, widget.post.uid, isLiked);
         isLiked = !isLiked;
       });
     }
@@ -53,9 +69,9 @@ class _PostWidgetState extends State<PostWidget> {
           },
         ));
       },
-      // onDoubleTapDown: (details) {
-      //   like();
-      // },
+      onDoubleTapDown: (details) {
+        like();
+      },
       child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Material(
@@ -86,9 +102,9 @@ class _PostWidgetState extends State<PostWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.circle_outlined,
-                                  size: 42,
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(url),
+                                  radius: 20,
                                 ),
                                 Text(
                                   '@${widget.post.username}',
@@ -115,21 +131,21 @@ class _PostWidgetState extends State<PostWidget> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Material(
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(10),
+                    SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             widget.post.thumbnailImageRef,
-
+                    
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) return child;
                               return SizedBox(
-                                height: 50,
+                                height: 150,
                                 child: Center(
                                   child: CircularProgressIndicator(
                                     value: loadingProgress.expectedTotalBytes !=
