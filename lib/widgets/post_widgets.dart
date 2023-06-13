@@ -63,7 +63,8 @@ class _PostWidgetState extends State<PostWidget> {
 
     return GestureDetector(
       onTap: () {
-        context.pushNamed(RouteConstants.postScreen, extra: widget.post);
+        context.pushNamed(RouteConstants.postScreen,
+            extra: widget.post, pathParameters: {'id': widget.postId});
       },
       onDoubleTapDown: (details) {
         like();
@@ -121,8 +122,9 @@ class _PostWidgetState extends State<PostWidget> {
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child:
-                                PillWidget(name: widget.post.categories[index], active: false),
+                            child: PillWidget(
+                                name: widget.post.categories[index],
+                                active: false),
                           );
                         },
                       ),
