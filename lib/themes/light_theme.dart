@@ -8,12 +8,12 @@ ThemeData lightTheme = ThemeData(
         color: Colors.black, iconTheme: IconThemeData(color: Colors.black)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color(0xfff0f0f0),
-      selectedItemColor: Color(0xff0a0200),
+      selectedItemColor: Colors.black,
       unselectedItemColor: Color(0xfff0f0f0),
     ),
     colorScheme: const ColorScheme.light(
       background: Color(0xfff0f0f0),
-      primary: Color(0xff0a0200),
+      primary: Colors.black,
       secondary: Color(0xfffbfcfe),
     ),
     textTheme: const TextTheme(

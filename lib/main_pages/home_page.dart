@@ -1,15 +1,19 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_showcase/models/post_model.dart';
 import 'package:project_showcase/services/auth_service.dart';
-import 'package:project_showcase/widgets/pill_widget.dart';
 import 'package:project_showcase/widgets/post_widgets.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<String> selectedCategories = ['','mobile', 'ui'];
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
@@ -17,12 +21,12 @@ class HomePage extends StatelessWidget {
     Auth auth = Auth();
 
     List<String> categories = [
-      'Mobile',
-      'Web',
-      'Product',
-      'Community',
-      'Announcement',
-      'UI'
+      'mobile',
+      'web',
+      'product',
+      'community',
+      'announcement',
+      'ui'
     ];
 
     return Scaffold(
@@ -51,49 +55,32 @@ class HomePage extends StatelessWidget {
             // centerTitle: true,
             elevation: 0,
             floating: true,
-            expandedHeight: 100,
-            collapsedHeight: 100,
-            flexibleSpace: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                child: ListView.builder(
-                  itemCount: 5,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PillWidget(name: categories[index]),
-                    );
-                  },
-                ),
-              ),
-            ),
           )
         ],
-        body: SafeArea(
-          child: FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .get(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  Map<String, dynamic> data =
-                      snapshot.data!.data() as Map<String, dynamic>;
-                  return StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('posts')
-                          .where('categories', arrayContainsAny: categories)
-                          .orderBy('createdAt', descending: true)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text("Error"),
-                          );
-                        } else if (snapshot.hasData) {
-                          return ListView(
+        body: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Map<String, dynamic> data =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('posts')
+                        .where('categories',
+                            arrayContainsAny: categories)
+                        .orderBy('createdAt', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text("Error"),
+                        );
+                      } else if (snapshot.hasData) {
+                        return SafeArea(
+                          child: ListView(
                             children: snapshot.data!.docs
                                 .where((element) =>
                                     !data['posts'].contains(element.id))
@@ -115,24 +102,26 @@ class HomePage extends StatelessWidget {
                                 postId: doc.id,
                               ));
                             }).toList(),
-                          );
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                          ),
                         );
-                      });
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text("Error"),
-                  );
-                }
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    });
+              }
+              if (snapshot.hasError) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: Text("Error"),
                 );
-              }),
-        ),
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }),
       ),
     );
   }
 }
+
+

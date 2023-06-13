@@ -74,7 +74,7 @@ class PostScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: PillWidget(name: post.categories[index]),
+                        child: PillWidget(name: post.categories[index], active: false),
                       );
                     },
                   ),

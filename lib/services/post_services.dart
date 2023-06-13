@@ -11,6 +11,7 @@ class PostServices {
       String postDecription,
       String username,
       String uid,
+      List<String> categories,
       Uint8List image,
       List<Uint8List> images,
       BuildContext context) async {
@@ -29,7 +30,7 @@ class PostServices {
                 postTitle: postTitle,
                 postDescription: postDecription,
                 thumbnailImageRef: '',
-                categories: ['UI'],
+                categories: categories,
                 likes: [],
                 images: [],
                 createdAt: Timestamp.now())

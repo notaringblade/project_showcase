@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PillWidget extends StatelessWidget {
-  const PillWidget({Key? key, required this.name}) : super(key: key);
+  const PillWidget({Key? key, required this.name, required this.active})
+      : super(key: key);
 
   final String name;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +14,17 @@ class PillWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.secondary),
+            border: Border.all(
+                color: active
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.secondary),
             borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).colorScheme.secondary),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(6.0),
             child: Text(
-              name,
+              name.toUpperCase(),
               style: Theme.of(context)
                   .textTheme
                   .bodySmall!

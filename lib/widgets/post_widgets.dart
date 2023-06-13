@@ -69,7 +69,7 @@ class _PostWidgetState extends State<PostWidget> {
         like();
       },
       child: Padding(
-        padding: const EdgeInsets.all(14.0),
+        padding: const EdgeInsets.all(8.0),
         child: Material(
           borderRadius: BorderRadius.circular(20),
           elevation: 4,
@@ -122,7 +122,7 @@ class _PostWidgetState extends State<PostWidget> {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child:
-                                PillWidget(name: widget.post.categories[index]),
+                                PillWidget(name: widget.post.categories[index], active: false),
                           );
                         },
                       ),
