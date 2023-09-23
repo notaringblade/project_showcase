@@ -165,6 +165,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                             });
                                           },
                                           child: PostWidget(
+                                            uid: data['uid'],
                                             post: post,
                                             postId: doc.id,
                                           )));

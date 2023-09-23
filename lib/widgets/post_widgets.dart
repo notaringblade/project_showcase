@@ -12,10 +12,12 @@ class PostWidget extends StatefulWidget {
     super.key,
     required this.post,
     required this.postId,
+    required this.uid,
   });
 
   final PostModel post;
   final String postId;
+  final String uid;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -29,7 +31,7 @@ class _PostWidgetState extends State<PostWidget> {
   void initState() {
     super.initState();
     getPfp();
-    isLiked = widget.post.likes.contains(widget.post.uid);
+    isLiked = widget.post.likes.contains(widget.uid);
   }
 
   Future getPfp() async {
@@ -56,7 +58,7 @@ class _PostWidgetState extends State<PostWidget> {
 
     void like() {
       setState(() {
-        postServices.likePost(widget.postId, widget.post.uid, isLiked);
+        postServices.likePost(widget.postId, widget.uid, isLiked);
         isLiked = !isLiked;
       });
     }
@@ -64,7 +66,7 @@ class _PostWidgetState extends State<PostWidget> {
     return GestureDetector(
       onTap: () {
         context.pushNamed(RouteConstants.postScreen,
-            extra: widget.post, pathParameters: {'id': widget.postId});
+            extra: widget.post, pathParameters: {'id': widget.postId, 'uid': widget.uid});
       },
       onDoubleTapDown: (details) {
         like();

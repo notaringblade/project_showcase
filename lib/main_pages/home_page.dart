@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> selectedCategories = ['','mobile', 'ui'];
+  List<String> selectedCategories = ['', 'mobile', 'ui'];
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
@@ -69,8 +69,8 @@ class _HomePageState extends State<HomePage> {
                 return StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('posts')
-                        .where('categories',
-                            arrayContainsAny: categories)
+                        // .where('categories',
+                        //     arrayContainsAny: categories)
                         .orderBy('createdAt', descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                                   createdAt: doc['createdAt']);
                               return SizedBox(
                                   child: PostWidget(
+                                uid: data['uid'],
                                 post: post,
                                 postId: doc.id,
                               ));
@@ -123,5 +124,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

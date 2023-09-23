@@ -23,14 +23,16 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           },
         ),
         GoRoute(
-          path: 'postScreen/:id',
+          path: 'postScreen/:id/:uid',
           name: RouteConstants.postScreen,
           pageBuilder: (BuildContext context, GoRouterState state) {
             PostModel post = state.extra as PostModel;
-            final name = state.pathParameters['id'];
+            final postId = state.pathParameters['id'];
+            final uid = state.pathParameters['uid'];
             return CupertinoPage(
                 child: PostScreen(
-              postId: name!,
+              uid: uid!,
+              postId: postId!,
               post: post,
             ));
           },
